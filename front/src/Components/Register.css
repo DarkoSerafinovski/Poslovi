@@ -1,0 +1,77 @@
+/* Kontejner za registraciju */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #283e51, #4b79a1);
+  }
+  
+  /* Registraciona kutija */
+  .register-box {
+    background-color: white;
+    padding: 2rem;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    text-align: center;
+  }
+  
+  /* Naslov */
+  .register-title {
+    margin: 0;
+    font-size: 2rem;
+    color: #283e51;
+  }
+  
+  /* Forma */
+  .register-form {
+    margin-top: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  
+  label {
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  textarea.form-input {
+    height: 80px;
+    resize: none;
+  }
+  
+  .form-input:focus {
+    border-color: #4b79a1;
+    outline: none;
+  }
+  
+  /* Dugme za registraciju */
+  .register-button {
+    background-color: #4b79a1;
+    color: white;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .register-button:hover {
+    background-color: #3b6a87;
+  }
+  

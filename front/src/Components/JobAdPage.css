@@ -1,0 +1,126 @@
+.job-ad-page {
+    padding: 20px;
+  }
+  
+  .job-banner img {
+    width: 100%;
+    height: auto;
+  }
+  
+  .job-description {
+    margin-top: 20px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .admin-section,
+  .company-section,
+  .student-section {
+    margin-top: 30px;
+  }
+  
+  .applications-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .applications-table th,
+  .applications-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .delete-job-btn,
+  .close-job-btn {
+    margin-top: 20px;
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .delete-job-btn:hover,
+  .close-job-btn:hover {
+    background: darkred;
+  }
+  
+  .student-section {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 500px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .student-section h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .student-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .student-section input[type="file"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .student-section input[type="file"]:hover {
+    border-color: #888;
+  }
+  
+  .student-section button[type="submit"] {
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .student-section button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  .invite-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  
+  .invite-btn:hover {
+    background-color: #45a049;
+  }
+  
+  .reject-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  .reject-btn:hover {
+    background-color: #d32f2f;
+  }
+    

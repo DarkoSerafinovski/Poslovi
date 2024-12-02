@@ -1,0 +1,58 @@
+.companies-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .companies-title {
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+  
+  .companies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .company-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 10px;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .company-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .company-image {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+  }
+  
+  .company-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .company-info {
+    margin-top: 10px;
+  }
+  
+  .company-name {
+    font-size: 1.2rem;
+    margin: 10px 0;
+  }
+  
+  .company-description {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
