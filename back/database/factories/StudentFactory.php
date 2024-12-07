@@ -4,25 +4,30 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Student;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
-class UserFactory extends Factory
+class StudentFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
+     * 
+     * 
+     * 
      */
+
+     
+    protected $model = Student::class;
     public function definition(): array
     {
         return [
-            'username' => $this->faker->name,
-            'email' => $this->faker->unique()->safeEmail,
-            'password' => Hash::make('password'), 
-            'type' => $this->faker->randomElement(['S', 'K']),
+            'id' => 1, 
+            'fakultet' => $this->faker->word(),
+            'godina_studija' => $this->faker->randomElement([1, 2, 3, 4]),
         ];
     }
 
