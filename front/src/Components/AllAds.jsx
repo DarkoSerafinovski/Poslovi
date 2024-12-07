@@ -5,6 +5,7 @@ import "./AllAds.css";
 
 const AllAds = () => {
   const [ads, setAds] = useState([]);
+  const [userRole, setUserRole] = useState("alumni"); // Default uloga
   const navigate = useNavigate(); // Dodali smo useNavigate
 
   useEffect(() => {
@@ -16,6 +17,11 @@ const AllAds = () => {
       ];
       setAds(sampleAds);
     };
+
+    const storedRole = sessionStorage.getItem("userRole");
+    if (storedRole) {
+      setUserRole(storedRole);
+    }
 
     fetchAds();
   }, []);
@@ -44,7 +50,9 @@ const AllAds = () => {
               <h2 className="ad-title">{ad.title}</h2>
               <p className="ad-company">{ad.company}</p>
               <p className="ad-location">{ad.location}</p>
-              <button className="apply-button">Prijavi se</button>
+              <button className="apply-button">
+                {userRole === "student" ? "Prijavi se" : "Pogledaj oglas"}
+              </button>
             </div>
           ))}
         </div>

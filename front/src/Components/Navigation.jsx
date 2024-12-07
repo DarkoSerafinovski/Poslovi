@@ -3,7 +3,7 @@ import "./Navigation.css";
 
 const Navigation = () => {
   // Postavljanje trenutne uloge
-  const [userRole, setUserRole] = useState("student"); // Default uloga
+  const [userRole, setUserRole] = useState("admin"); // Default uloga
 
   useEffect(() => {
     // Provera uloge iz sessionStorage
@@ -23,6 +23,7 @@ const Navigation = () => {
             <li><a href="/kompanije">Kompanije</a></li>
             <li><a href="/categories">Kategorije</a></li>
             <li><a href="/students">Studenti</a></li>
+            <li><a href="/svi-postovi">Svi Postovi</a></li>
           </>
         );
       case "company":
@@ -31,6 +32,7 @@ const Navigation = () => {
             <li><a href="/account">Naš Profil</a></li>
             <li><a href="/nasi-oglasi">Naši Oglasi</a></li>
             <li><a href="/dodaj-oglas">Dodaj Oglas</a></li>
+            <li><a href="/svi-postovi">Svi Postovi</a></li>
           </>
         );
       case "student":
@@ -39,6 +41,16 @@ const Navigation = () => {
             <li><a href="/all-ads">Svi Oglasi</a></li>
             <li><a href="/moje-prijave">Moje Prijave</a></li>
             <li><a href="/kompanije">Kompanije</a></li>
+            <li><a href="/svi-postovi">Svi Postovi</a></li>
+          </>
+        );
+      case "alumni":
+        return (
+          <>
+            <li><a href="/all-ads">Svi Oglasi</a></li>
+            <li><a href="/kompanije">Kompanije</a></li>
+            <li><a href="/svi-postovi">Svi Postovi</a></li>
+            <li><a href="/napisi-post">Napiši Post</a></li>
           </>
         );
       default:

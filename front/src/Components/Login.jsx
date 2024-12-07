@@ -13,9 +13,8 @@ const Login = () => {
 
     // Logika za proveru korisničkog unosa (npr. simulacija autentifikacije)
     if (email && password) {
-      // Čuvanje uloge u sessionStorage za demonstraciju
-      // Ova logika treba biti zamenjena stvarnom autentifikacijom
-      sessionStorage.setItem("userRole", "student"); // Primer uloge
+      
+      sessionStorage.setItem("userRole", "alumni"); // Primer uloge
 
       // Preusmeravanje na odgovarajuće stranice na osnovu uloge
       const userRole = sessionStorage.getItem("userRole");
@@ -23,6 +22,8 @@ const Login = () => {
         navigate("/all-ads");
       } else if (userRole === "company") {
         navigate("/account");
+      } else if(userRole === "alumni"){
+        navigate("/svi-postovi");
       }
     } else {
       alert("Molimo vas da unesete email i lozinku.");

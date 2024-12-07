@@ -13,6 +13,9 @@ import CompanyProfile from './Components/CompanyProfile';
 import MyAds from './Components/MyAds';
 import AddAd from './Components/AddAd';
 import MyApplications from './Components/MyApplications';
+import AllPosts from './Components/AllPosts';
+import SinglePost from './Components/SinglePost';
+import CreatePost from './Components/CreatePost';
 
 function App() {
   return (
@@ -31,6 +34,11 @@ function App() {
             <Route path="/nasi-oglasi" element={<MyAds />} />
             <Route path="/dodaj-oglas" element={<AddAd />} />
             <Route path="/moje-prijave" element={<MyApplications />} />
+            <Route path="/svi-postovi" element={<AllPosts />} />
+            <Route path="/svi-postovi/:id" element={<SinglePost />} />
+            <Route path="/napisi-post" element={<CreatePost />} />
+
+
          </Routes>
       </div>
     </Router>
