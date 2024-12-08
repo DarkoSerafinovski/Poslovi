@@ -24,12 +24,49 @@ const Register = () => {
             >
               <option value="student">Student</option>
               <option value="company">Kompanija</option>
+              <option value="alumni">Alumni</option>
             </select>
           </div>
 
           {/* Polja za studente */}
           {userType === "student" && (
             <>
+              <div className="form-group">
+                <label htmlFor="firstName">Ime</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  className="form-input"
+                  placeholder="Unesite svoje ime"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="lastName">Prezime</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  className="form-input"
+                  placeholder="Unesite svoje prezime"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="university">Fakultet</label>
+                <input
+                  type="text"
+                  id="university"
+                  className="form-input"
+                  placeholder="Unesite naziv fakulteta"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="studyYear">Godina studija</label>
+                <input
+                  type="number"
+                  id="studyYear"
+                  className="form-input"
+                  placeholder="Unesite godinu studija"
+                />
+              </div>
               <div className="form-group">
                 <label htmlFor="studentEmail">Email</label>
                 <input
@@ -58,10 +95,10 @@ const Register = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="password">Ponovite Lozinku</label>
+                <label htmlFor="repeatPassword">Ponovite Lozinku</label>
                 <input
                   type="password"
-                  id="password"
+                  id="repeatPassword"
                   className="form-input"
                   placeholder="Ponovite lozinku"
                 />
@@ -118,10 +155,52 @@ const Register = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="companyPassword">Ponovite Lozinku</label>
+                <label htmlFor="repeatCompanyPassword">Ponovite Lozinku</label>
                 <input
                   type="password"
-                  id="companyPassword"
+                  id="repeatCompanyPassword"
+                  className="form-input"
+                  placeholder="Ponovite lozinku"
+                />
+              </div>
+            </>
+          )}
+
+          {/* Polja za alumni */}
+          {userType === "alumni" && (
+            <>
+              <div className="form-group">
+                <label htmlFor="alumniEmail">Email</label>
+                <input
+                  type="email"
+                  id="alumniEmail"
+                  className="form-input"
+                  placeholder="Unesite svoj email"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="alumniUsername">Korisničko ime</label>
+                <input
+                  type="text"
+                  id="alumniUsername"
+                  className="form-input"
+                  placeholder="Unesite korisničko ime"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="alumniPassword">Lozinka</label>
+                <input
+                  type="password"
+                  id="alumniPassword"
+                  className="form-input"
+                  placeholder="Unesite lozinku"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="repeatAlumniPassword">Ponovite Lozinku</label>
+                <input
+                  type="password"
+                  id="repeatAlumniPassword"
                   className="form-input"
                   placeholder="Ponovite lozinku"
                 />
@@ -134,8 +213,8 @@ const Register = () => {
             Registrujte se
           </button>
           <p className="login-footer">
-          Imate nalog? <a href="/">Prijavite se</a>
-        </p>
+            Imate nalog? <a href="/">Prijavite se</a>
+          </p>
         </form>
       </div>
     </div>

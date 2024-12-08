@@ -30,7 +30,7 @@ const JobAdPage = () => {
 
   // Dohvaćanje uloge iz sessionStorage
   useEffect(() => {
-    const storedRole = sessionStorage.getItem("role") || "alumni";
+    const storedRole = sessionStorage.getItem("userRole") || "alumni";
     if (storedRole) {
       setRole(storedRole);
     } else {

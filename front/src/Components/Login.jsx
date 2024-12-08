@@ -14,7 +14,7 @@ const Login = () => {
     // Logika za proveru korisničkog unosa (npr. simulacija autentifikacije)
     if (email && password) {
       
-      sessionStorage.setItem("userRole", "alumni"); // Primer uloge
+      sessionStorage.setItem("userRole", "company"); // Primer uloge
 
       // Preusmeravanje na odgovarajuće stranice na osnovu uloge
       const userRole = sessionStorage.getItem("userRole");

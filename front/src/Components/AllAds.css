@@ -1,8 +1,70 @@
 /* Kontejner za sve oglase */
 .all-ads-container {
-    max-width: 1200px;
+    
     margin: 0 auto;
     padding: 20px;
+  }
+  .all-ads-container {
+    display: flex;
+  }
+  
+  .sidebar {
+    width: 250px;
+    padding:20px;
+    background-color: #f8f8f8;
+    border-right: 1px solid #ddd;
+  }
+  
+  .sidebar h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .sidebar li:hover {
+    background-color: #ddd;
+  }
+  
+  .sidebar li.selected {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .reset-button {
+    display: block;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .reset-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .ads-section {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .ads-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
   }
   
   .page-title {

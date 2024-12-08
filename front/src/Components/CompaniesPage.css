@@ -1,58 +1,121 @@
 .companies-container {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .companies-title {
-    margin-bottom: 20px;
-    font-size: 2rem;
-  }
-  
-  .companies-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-  }
-  
-  .company-card {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    padding: 10px;
-    transition: transform 0.2s ease-in-out;
-  }
-  
-  .company-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .company-image {
-    border-radius: 50%;
-    overflow: hidden;
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-  }
-  
-  .company-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .company-info {
-    margin-top: 10px;
-  }
-  
-  .company-name {
-    font-size: 1.2rem;
-    margin: 10px 0;
-  }
-  
-  .company-description {
-    font-size: 0.9rem;
-    color: #555;
-  }
-  
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 20px;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.sidebar h4 {
+  font-size: 1.2rem;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar ul li:hover {
+  background-color: #e0e0e0;
+}
+
+.sidebar ul li.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.reset-button {
+  margin-top: 20px;
+  padding: 10px;
+  width: 100%;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.reset-button:hover {
+  background-color: #0056b3;
+}
+
+.companies-main {
+  flex-grow: 1;
+}
+
+.companies-title {
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.companies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.company-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 10px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.company-card:hover {
+  transform: translateY(-5px);
+}
+
+.company-image {
+  border-radius: 50%;
+  overflow: hidden;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.company-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.company-info {
+  margin-top: 10px;
+}
+
+.company-name {
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+
+.company-description {
+  font-size: 0.9rem;
+  color: #555;
+}
