@@ -63,3 +63,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('kategorije/{id}',[KategorijaOglasaController::class,'destroy']);
 
 });
+
+
+
+use Illuminate\Support\Facades\Http;
+
+Route::get('/adzuna/jobs', function (Illuminate\Http\Request $request) {
+    $country = $request->query('country', 'gb'); // Default country: GB
+    $position = $request->query('what', '');
+    $page = $request->query('page', 1);
+
+    $appId = env('ADZUNA_APP_ID');
+    $appKey = env('ADZUNA_APP_KEY');
+
+    $response = Http::get("https://api.adzuna.com/v1/api/jobs/{$country}/search/{$page}", [
+        'app_id' => $appId,
+        'app_key' => $appKey,
+        'what' => $position,
+        'results_per_page' => 10,
+    ]);
+
+    return $response->json();
+});

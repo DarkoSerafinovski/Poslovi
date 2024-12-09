@@ -16,6 +16,7 @@ import MyApplications from './Components/MyApplications';
 import AllPosts from './Components/AllPosts';
 import SinglePost from './Components/SinglePost';
 import CreatePost from './Components/CreatePost';
+import JobSearchPage from './Components/JobSearchPage'
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="/svi-postovi" element={<AllPosts />} />
             <Route path="/svi-postovi/:id" element={<SinglePost />} />
             <Route path="/napisi-post" element={<CreatePost />} />
+            <Route path="/public-api" element={<JobSearchPage />} />
 
 
          </Routes>
