@@ -54,12 +54,12 @@ class User extends Authenticatable
         return $this->hasOne(Kompanija::class, 'id');
     }
 
-    public function ads()
+    public function nasiOglasi()
     {
         return $this->hasMany(Oglas::class);
     }
 
-    public function applications()
+    public function mojePrijave()
     {
         return $this->hasMany(Prijava::class);
     }

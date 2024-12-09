@@ -14,6 +14,7 @@ class KompanijaFactory extends Factory
             'id' => 1,
             'naziv' => $this->faker->company(),
             'opis' => $this->faker->paragraph(),
+            'logo'=> $this->faker->imageUrl(),
             'kategorija_id' => 1,
         ];
     }

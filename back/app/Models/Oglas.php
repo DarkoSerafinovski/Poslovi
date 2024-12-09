@@ -16,7 +16,8 @@ class Oglas extends Model
         'opis',
         'potrebna_znanja', 
         'lokacija',        
-        'banner',  
+        'banner', 
+        'kategorija_id', 
         'tip',       
     ];
 
@@ -28,5 +29,9 @@ class Oglas extends Model
     public function prijave()
     {
         return $this->hasMany(Prijava::class, 'oglas_id');
+    }
+
+    public function kategorija(){
+        return $this->belongsTo(KategorijaOglasa::class,'kategorija_id');
     }
 }

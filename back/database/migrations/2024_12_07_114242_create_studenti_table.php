@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('studenti', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary(); 
+            $table->string('ime');
+            $table->string('prezime');
             $table->string('fakultet');
             $table->integer('godina_studija');
             $table->timestamps();

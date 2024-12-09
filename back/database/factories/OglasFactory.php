@@ -14,6 +14,7 @@ class OglasFactory extends Factory
             'naslov' => $this->faker->sentence(),
             'opis' => $this->faker->paragraph(),
             'potrebna_znanja' => $this->faker->words(3, true),
+            'kategorija_id'=>1,
             'lokacija' => $this->faker->city(),
             'banner' => $this->faker->imageUrl(),
             'tip' => $this->faker->randomElement(['praksa', 'posao']),

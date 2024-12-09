@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('oglasi', function (Blueprint $table) {
            $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('kategorija_id')->nullable();
             $table->string('naslov');
             $table->text('opis');
-            $table->text('potrebna_znanja'); 
+            $table->text('potrebna_znanja');
+            $table->foreign('kategorija_id')->references('id')->on('kategorije_oglasa')->onDelete('set null');
             $table->string('lokacija');      
             $table->string('banner');     
             $table->enum('tip', ['posao', 'praksa']);    

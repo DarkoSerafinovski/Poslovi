@@ -16,6 +16,7 @@ class Kompanija extends Model
         'naziv',
         'opis',
         'kategorija_id',
+        'logo',
     ];
 
     public function user()
@@ -24,10 +25,12 @@ class Kompanija extends Model
     }
 
 
-    public function category()
+    public function kategorija()
 {
-    return $this->belongsTo(Kategorija::class, 'kategorija_id');
+    return $this->belongsTo(KategorijaKompanije::class, 'kategorija_id');
 }
+
+    
 
 
 

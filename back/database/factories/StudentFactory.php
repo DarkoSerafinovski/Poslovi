@@ -26,6 +26,8 @@ class StudentFactory extends Factory
     {
         return [
             'id' => 1, 
+            'ime' => $this->faker->firstName(),
+            'prezime' => $this->faker->lastName(),
             'fakultet' => $this->faker->word(),
             'godina_studija' => $this->faker->randomElement([1, 2, 3, 4]),
         ];

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kategorije', function (Blueprint $table) {
+        Schema::create('kategorije_oglasa', function (Blueprint $table) {
             $table->id();
             $table->string('naziv')->unique();
             $table->timestamps();
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kategorije');
+        Schema::dropIfExists('kategorije_oglasa');
     }
 };

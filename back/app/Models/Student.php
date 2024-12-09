@@ -13,6 +13,8 @@ class Student extends Model
 
     protected $fillable = [
         'id',
+        'ime',
+        'prezime',
         'fakultet',
         'godina_studija',
     ];

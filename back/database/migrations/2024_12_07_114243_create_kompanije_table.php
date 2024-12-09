@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('naziv');
             $table->text('opis');
             $table->unsignedBigInteger('kategorija_id')->nullable();
+            $table->string('logo');   
             $table->timestamps();
             $table->foreign('id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('kategorija_id')->references('id')->on('kategorije')->onDelete('set null');
+            $table->foreign('kategorija_id')->references('id')->on('kategorije_kompanije')->onDelete('set null');
         });
     }
 
