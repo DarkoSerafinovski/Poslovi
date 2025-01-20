@@ -1,46 +1,72 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Dodajemo useNavigate
 import Navigation from "./Navigation";
+import axios from "axios"; // Dodajemo axios
 import "./AllPosts.css";
 
 const AllPosts = () => {
   const [posts, setPosts] = useState([]);
-  const navigate = useNavigate(); // Inicijalizujemo useNavigate
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+  });
+  const postsPerPage = 3; // Broj postova po stranici
+  const navigate = useNavigate();
 
+  // Učitaj postove sa servera
   useEffect(() => {
     const fetchPosts = async () => {
-      const samplePosts = [
-        {
-          id: 1,
-          title: "Kako sam pronašao posao u IT sektoru",
-          author: "Marko Petrovic",
-          content: "Ovo je kratak uvod u moj put ka prvom poslu u IT sektoru...",
-          date: "2024-12-01",
-        },
-        {
-          id: 2,
-          title: "Saveti za uspešan intervju",
-          author: "Ana Jovanovic",
-          content: "U ovom postu podeliću kratke savete o pripremi za intervju...",
-          date: "2024-11-28",
-        },
-        {
-          id: 3,
-          title: "Moj put od studenta do senior developera",
-          author: "Nikola Mitrovic",
-          content: "Ovo je sažetak mog profesionalnog razvoja od juniora do seniora...",
-          date: "2024-11-15",
-        },
-      ];
+      try {
+        const response = await axios.get("http://localhost:8000/api/postovi", {
+          params: {
+            page: pagination.currentPage,
+            per_page: postsPerPage, // Broj postova po stranici
+          },
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("auth_token"),
+          },
+        });
 
-      setPosts(samplePosts);
+        setPosts(response.data.data); // Spremi postove u state
+
+        // Ažuriraj podatke o paginaciji
+        setPagination({
+          currentPage: response.data.meta.current_page,
+          totalPages: response.data.meta.last_page,
+          totalItems: response.data.meta.total,
+        });
+      } catch (error) {
+        console.error("Greška pri učitavanju postova:", error);
+      }
     };
 
     fetchPosts();
-  }, []);
+  }, [pagination.currentPage]); // Pokreni fetch kada se stranica promeni
 
+  // Handle za sledeću stranicu
+  const handleNextPage = () => {
+    if (pagination.currentPage < pagination.totalPages) {
+      setPagination((prev) => ({
+        ...prev,
+        currentPage: prev.currentPage + 1,
+      }));
+    }
+  };
+
+  // Handle za prethodnu stranicu
+  const handlePrevPage = () => {
+    if (pagination.currentPage > 1) {
+      setPagination((prev) => ({
+        ...prev,
+        currentPage: prev.currentPage - 1,
+      }));
+    }
+  };
+
+  // Handle za otvaranje detalja posta
   const handleReadMore = (postId) => {
-    navigate(`/svi-postovi/${postId}`); // Navigacija na stranicu određenog posta
+    navigate(`/svi-postovi/${postId}`); // Navigacija na stranicu sa detaljima posta
   };
 
   return (
@@ -49,20 +75,45 @@ const AllPosts = () => {
       <div className="all-posts-container">
         <h1 className="page-title">Svi Postovi</h1>
         <div className="posts-list">
-          {posts.map((post) => (
-            <div className="post-card" key={post.id}>
-              <h2 className="post-title">{post.title}</h2>
-              <p className="post-author">Autor: {post.author}</p>
-              <p className="post-date">Datum: {post.date}</p>
-              <p className="post-content">{post.content}</p>
-              <button
-                className="read-more-button"
-                onClick={() => handleReadMore(post.id)} // Dodajemo onClick za navigaciju
-              >
-                Pročitaj više
-              </button>
-            </div>
-          ))}
+          {posts.length > 0 ? (
+            posts.map((post) => (
+              <div className="post-card" key={post.id}>
+                <h2 className="post-title">{post.naslov}</h2>
+                <p className="post-author">Autor: {post.autor}</p>
+                <p className="post-date">Datum: {post.datum_i_vreme}</p>
+                <p className="post-content">{post.sadrzaj}</p>
+                <button
+                  className="read-more-button"
+                  onClick={() => handleReadMore(post.id)} // Dodajemo onClick za navigaciju
+                >
+                  Pročitaj više
+                </button>
+              </div>
+            ))
+          ) : (
+            <p>Nema postova za prikaz.</p>
+          )}
+        </div>
+
+        {/* Kontrole za paginaciju */}
+        <div className="pagination">
+          <button
+            onClick={handlePrevPage}
+            disabled={pagination.currentPage === 1}
+            className="pagination-button"
+          >
+            Prethodna
+          </button>
+          <span className="pagination-info">
+            Stranica {pagination.currentPage} od {pagination.totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={pagination.currentPage === pagination.totalPages}
+            className="pagination-button"
+          >
+            Sledeća
+          </button>
         </div>
       </div>
     </>

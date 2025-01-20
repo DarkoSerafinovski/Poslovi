@@ -3,6 +3,7 @@
  namespace App\Http\Controllers;
 
  use App\Models\User;
+ use App\Models\Prijava;
  use Illuminate\Http\Request;
  use App\Http\Resources\UserResource;
  use App\Http\Resources\OglasResource;
@@ -35,9 +36,7 @@
     {
         try {
            
-            $studenti = User::where('type', 'student')->get();
-    
-           
+            $studenti = User::where('type', 'student')->paginate(5);
             return UserResource::collection($studenti);
     
         } catch (Exception $e) {
@@ -76,13 +75,25 @@
      
 
 
-    public function prijave(){
+    public function prijave(Request $request)
+    {
         try {
-            
+            $validatedData = $request->validate([
+                'status' => 'nullable|string|in:odbijeno,prihvaceno,na cekanju'
+            ]);
+    
             $user = Auth::user();
-            return  PrijavaResource::collection($user->mojePrijave);
-            
-
+    
+            $query = Prijava::where('user_id', $user->id);
+    
+            // Ako je status poslat, dodajte ga kao uslov
+            if ($request->status) {
+                $query->where('status', $validatedData['status']);
+            }
+    
+            $prijave = $query->orderBy('datum_i_vreme', 'desc')->paginate(5);
+    
+            return PrijavaResource::collection($prijave);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Došlo je do greške prilikom uzimanja prijava korisnika.',
@@ -90,13 +101,14 @@
             ], 500);
         }
     }
-
+    
    
 
 
     public function oglasi(){
         try {
             
+  
             $user = Auth::user();
             return  OglasResource::collection($user->nasiOglasi);
             

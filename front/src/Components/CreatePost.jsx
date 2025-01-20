@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "./Navigation";
+import axios from "axios";
 import "./CreatePost.css";
 
 const CreatePost = () => {
   const navigate = useNavigate();
-  const [post, setPost] = useState({ title: "", author: "", content: "" });
+  const [post, setPost] = useState({ title: "", content: "" });
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -13,16 +14,35 @@ const CreatePost = () => {
     setPost({ ...post, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!post.title || !post.author || !post.content) {
-      setError("Sva polja su obavezna.");
+    if (!post.title || !post.content) {
+      setError("Naslov i sadržaj su obavezni.");
       return;
     }
 
-    // Simulacija čuvanja posta
-    alert("Post je uspešno dodat!");
-    navigate("/all-posts"); // Preusmeravanje na stranicu sa svim postovima
+    try {
+      // Slanje POST zahteva sa Authorization headerom
+      const response = await axios.post(
+        "http://localhost:8000/api/postovi",
+        {
+          naslov: post.title,
+          sadrzaj: post.content,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("auth_token"),
+          },
+        }
+      );
+
+     
+        alert("Post je uspešno dodat!");
+        navigate("/svi-postovi");
+      
+    } catch (error) {
+      setError("Došlo je do greške pri dodavanju posta.");
+    }
   };
 
   return (
@@ -41,8 +61,6 @@ const CreatePost = () => {
             onChange={handleChange}
             placeholder="Unesite naslov posta"
           />
-
-          
 
           <label htmlFor="content">Sadržaj:</label>
           <textarea

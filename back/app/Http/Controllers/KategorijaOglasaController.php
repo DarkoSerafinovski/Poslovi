@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\KategorijaOglasa;
 use App\Http\Resources\KategorijaOglasaResource;
+use Illuminate\Support\Facades\Auth;
 
 class KategorijaOglasaController extends Controller
 {

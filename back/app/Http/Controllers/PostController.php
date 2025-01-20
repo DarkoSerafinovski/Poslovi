@@ -12,8 +12,10 @@ class PostController extends Controller
     {
         try {
             
-            $posts = Post::all();
+            $posts = Post::orderBy('datum_i_vreme', 'desc')->paginate(3);
             return PostResource::collection($posts);
+            
+            
         } catch (\Exception $e) {
            
             return response()->json([

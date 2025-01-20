@@ -33,7 +33,7 @@ class AuthController extends Controller
         'naziv' => 'required_if:role,company|string|max:255',
         'opis' => 'required_if:role,company|string|max:500',
         'kategorija_id' => 'required_if:role,company|exists:kategorije_kompanije,id',
-        'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+        'logo' => 'required_if:role,company|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
     ]);
 
     if ($validator->fails()) {
@@ -111,10 +111,10 @@ private function uploadLogo($file, $naziv)
         }
  
         $user = User::where('email', $request['email'])->firstOrFail();
- 
+       
         $token = $user->createToken('auth_token')->plainTextToken;
- 
-        return response()->json(['success'=>true,'data'=> new UserResource($user), 'access_token'=> $token, 'token_type'=> 'Bearer','role'=>$user->type]);
+        \Log::info($token);
+        return response()->json(['success'=>true,'data'=> $user, 'access_token'=> $token, 'token_type'=> 'Bearer','role'=>$user->type]);
     }
  
     public function logout(Request $request)

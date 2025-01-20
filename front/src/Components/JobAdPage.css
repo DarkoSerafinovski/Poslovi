@@ -124,3 +124,19 @@
     background-color: #d32f2f;
   }
     
+
+  .accepted {
+    background-color: #28a745; /* zelena */
+    color: white;
+  }
+  
+  .pending {
+    background-color: #ffc107; /* zuta */
+    color: black;
+  }
+  
+  .rejected {
+    background-color: #dc3545; /* crvena */
+    color: white;
+  }
+  

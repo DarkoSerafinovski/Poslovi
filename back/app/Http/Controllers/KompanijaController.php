@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kompanija;
+use App\Models\User;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\KompanijaResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +18,6 @@ class KompanijaController extends Controller
     try {
       
         $validator = $request->validate([
-            'naziv' => 'nullable|string|max:255',
             'kategorija' => 'nullable|array',
             'kategorija.id' => 'required_with:kategorija|integer|exists:kategorije_kompanije,id',
             'kategorija.naziv' => 'nullable|string|max:255',
@@ -26,20 +27,18 @@ class KompanijaController extends Controller
         $query = Kompanija::query();
 
       
-        if ($request->filled('naziv')) {
-            $query->where('naziv', 'like', '%' . $request->naziv . '%');
-        }
+       
 
       
         if ($request->filled('kategorija.id')) {
             $query->where('kategorija_id', $request->input('kategorija.id'));
         }
 
-        if (!$request->filled('naziv') && !$request->filled('kategorija')) {
+        else {
             $query->orderBy('naziv', 'asc');
         }
       
-        $kompanije = $query->paginate(10);
+        $kompanije = $query->paginate(6);
 
         return  KompanijaResource::collection($kompanije);
     } catch (\Exception $e) {
@@ -57,8 +56,8 @@ class KompanijaController extends Controller
 public function show($id)
 {
     try {
-             $kompanija = Kompanija::findOrFail($id);
-            return new KompanijaResource($kompanija);
+             $user = User::findOrFail($id);
+            return new UserResource($user);
       
     } catch (\Exception $e) {
 
@@ -84,10 +83,9 @@ public function update(Request $request, $id)
                 ], 401);
             }
             $kompanija = Kompanija::findOrFail($id);
-
             $validatedData = $request->validate([
-                'naziv' => 'required|string|max:255',
-                'email' => 'required|email|max:255',
+                'naziv' => 'required|string',
+                'email' => 'required|email',
                 'kategorija_id' => 'nullable|integer|exists:kategorije_kompanije,id',
                 'opis' => 'required|string',
                 'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 

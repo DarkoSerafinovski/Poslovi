@@ -1,32 +1,47 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // Držimo poruku greške
   const navigate = useNavigate();
 
   // Funkcija za login
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
+    setError(""); // Resetovanje greške pre pokušaja prijave
 
-    // Logika za proveru korisničkog unosa (npr. simulacija autentifikacije)
-    if (email && password) {
-      
-      sessionStorage.setItem("userRole", "company"); // Primer uloge
+    try {
+      // Slanje POST zahteva na API
+      const response = await axios.post("http://localhost:8000/api/login", {
+        email,
+        password,
+      });
 
-      // Preusmeravanje na odgovarajuće stranice na osnovu uloge
-      const userRole = sessionStorage.getItem("userRole");
-      if (userRole === "admin" || userRole === "student") {
-        navigate("/all-ads");
-      } else if (userRole === "company") {
-        navigate("/account");
-      } else if(userRole === "alumni"){
-        navigate("/svi-postovi");
+      // Provera uspešnosti odgovora
+      if (response.data.success) {
+        const { access_token, role,data } = response.data;
+
+        // Čuvanje tokena i uloge u sessionStorage
+        sessionStorage.setItem("auth_token", access_token);
+        sessionStorage.setItem("role", role);
+        sessionStorage.setItem('user_id',data.id);
+        if (role === "admin" || role === "student") {
+          navigate("/all-ads");
+        } else if (role === "company") {
+          navigate("/account");
+        } else if (role === "alumni") {
+          navigate("/svi-postovi");
+        }
+      } else {
+        setError("Neuspešna prijava. Proverite svoje podatke.");
       }
-    } else {
-      alert("Molimo vas da unesete email i lozinku.");
+    } catch (err) {
+      console.error("Greška prilikom prijave:", err);
+      setError("Došlo je do greške. Molimo pokušajte ponovo.");
     }
   };
 
@@ -35,6 +50,7 @@ const Login = () => {
       <div className="login-box">
         <h1 className="login-title">Dobrodošli!</h1>
         <p className="login-subtitle">Prijavite se da biste nastavili.</p>
+        {error && <p className="error-message">{error}</p>} {/* Prikaz greške */}
         <form className="login-form" onSubmit={handleLogin}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -58,7 +74,6 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          
           <button type="submit" className="login-button">
             Prijavi se
           </button>

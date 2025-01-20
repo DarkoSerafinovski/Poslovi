@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KategorijaOglasaController;
+use App\Http\Controllers\KategorijaKompanijeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KompanijaController;
 use App\Http\Controllers\OglasController;
@@ -32,10 +33,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('kompanije/oglasi',[UserController::class,'oglasi']);
 
-
+    Route::get('kompanije/kategorije',[KategorijaKompanijeController::class,'index']);
+    Route::get('kompanije/{id}',[KompanijaController::class,'show']);   
     Route::get('kompanije/',[KompanijaController::class,'index']);
     Route::put('kompanije/{id}',[KompanijaController::class,'update']);
+
+
 
     Route::get('oglasi/',[OglasController::class,'index']);
     Route::get('oglasi/{id}',[OglasController::class,'show']);
@@ -48,7 +53,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('users/studenti',[UserController::class,'vratiStudente']);
     Route::delete('users/{id}',[UserController::class,'destroy']);
-    Route::get('kompanije/oglasi',[UserController::class,'oglasi']);
 
     Route::get('users/moje-prijave',[UserController::class,'prijave']);
 

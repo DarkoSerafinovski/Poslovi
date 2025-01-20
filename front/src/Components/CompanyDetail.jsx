@@ -1,31 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios"; // Dodajemo axios
 import "./CompanyDetail.css";
 import Navigation from "./Navigation";
 
 const CompanyDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); // Dodali smo useNavigate
+  const navigate = useNavigate();
   const [company, setCompany] = useState(null);
   const [ads, setAds] = useState([]);
 
   useEffect(() => {
-    // Simulirani podaci za kompaniju i njene oglase
-    const fetchedCompany = {
-      id,
-      name: `Kompanija ${id}`,
-      imageUrl: "https://via.placeholder.com/100",
-      description: `Opis kompanije ${id}`,
+    // Definiši URL za API
+    const fetchCompanyData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/kompanije/${id}`, {
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('auth_token'),
+          }
+        });
+
+        const { data } = response.data;
+        
+        setCompany({
+          id: data.id,
+          name: data.details.naziv, // Ako je 'username' naziv kompanije, koristi ga
+          imageUrl: data.details.logo, // Logo kompanije
+          description: data.details.opis, // Opis kompanije
+        });
+
+        setAds(data.details.oglasi.map(ad => ({
+          id: ad.id,
+          title: ad.naslov, // Oglasni naslov
+          description: ad.opis, // Opis oglasa
+        })));
+      } catch (error) {
+        console.error("Greška prilikom učitavanja podataka:", error);
+      }
     };
 
-    const fetchedAds = [
-      { id: 1, title: "Oglas 1 za Kompaniju " + id, description: "Opis oglasa 1" },
-      { id: 2, title: "Oglas 2 za Kompaniju " + id, description: "Opis oglasa 2" },
-      { id: 3, title: "Oglas 3 za Kompaniju " + id, description: "Opis oglasa 3" },
-    ];
-
-    setCompany(fetchedCompany);
-    setAds(fetchedAds);
+    fetchCompanyData();
   }, [id]);
 
   // Funkcija za navigaciju do stranice oglasa
@@ -40,28 +54,33 @@ const CompanyDetail = () => {
         {company ? (
           <>
             <div className="company-detail-header">
-              <h1>{company.name}</h1>
+           
               <img
                 src={company.imageUrl}
                 alt={company.name}
                 className="company-detail-image"
               />
+                 <h1>{company.name}</h1>
               <p>{company.description}</p>
             </div>
             <div className="company-ads">
               <h2>Oglasi</h2>
               <div className="ads-list">
-                {ads.map((ad) => (
-                  <div
-                    key={ad.id}
-                    className="ad-card"
-                    onClick={() => handleAdClick(ad.id)} // Dodali smo onClick
-                    style={{ cursor: "pointer" }} // Promena kursora
-                  >
-                    <h3>{ad.title}</h3>
-                    <p>{ad.description}</p>
-                  </div>
-                ))}
+                {ads.length > 0 ? (
+                  ads.map((ad) => (
+                    <div
+                      key={ad.id}
+                      className="ad-card"
+                      onClick={() => handleAdClick(ad.id)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <h3>{ad.title}</h3>
+                      <p>{ad.description}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p>Oglasi nisu dostupni.</p>
+                )}
               </div>
             </div>
           </>

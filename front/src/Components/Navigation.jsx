@@ -7,7 +7,7 @@ const Navigation = () => {
 
   useEffect(() => {
     // Provera uloge iz sessionStorage
-    const storedRole = sessionStorage.getItem("userRole");
+    const storedRole = sessionStorage.getItem("role");
     if (storedRole) {
       setUserRole(storedRole);
     }
@@ -42,6 +42,8 @@ const Navigation = () => {
             <li><a href="/moje-prijave">Moje Prijave</a></li>
             <li><a href="/kompanije">Kompanije</a></li>
             <li><a href="/svi-postovi">Svi Postovi</a></li>
+            <li><a href="/public-api">Ponude u inostranstvu</a></li>
+            
           </>
         );
       case "alumni":

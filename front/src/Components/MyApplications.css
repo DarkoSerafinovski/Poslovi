@@ -28,6 +28,23 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   
+  .application-card.rejected {
+    background-color: #f5606c;
+    border-color: #f5606c;
+  }
+  
+  .application-card.pending {
+    background-color: #eecd5d;
+    border-color: #eecd5d;
+  }
+  
+  .application-card.accepted {
+    background-color: #69c77f;
+    color:black;
+    border-color: #69c77f;
+  }
+  
+  
   .application-title {
     font-size: 1.2em;
     margin-bottom: 10px;

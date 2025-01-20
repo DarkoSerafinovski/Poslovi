@@ -17,9 +17,8 @@ class OglasController extends Controller
             // Validacija parametara
             $validator = $request->validate([
                 'tip' => 'nullable|string|max:255',
-                'kategorija' => 'nullable|array',
-                 'kategorija.id' => 'required_with:kategorija|integer|exists:kategorije_oglasa,id',
-                 'kategorija.naziv' => 'nullable|string|max:255',
+                 'kategorija_id' => 'nullable|integer|exists:kategorije_oglasa,id',
+               
             ]);
 
             $query = Oglas::query();
@@ -34,13 +33,8 @@ class OglasController extends Controller
                 $query->where('kategorija_id', $request->kategorija_id);
             }
 
-          
-            if (!$request->filled('tip') && !$request->filled('kategorija_id')) {
-                $query->orderBy('tip', 'asc');
-            }
-
            
-            $oglasi = $query->paginate(10);
+            $oglasi = $query->orderBy('created_at', 'desc')->paginate(10);
 
             return OglasResource::collection($oglasi);
 
@@ -58,8 +52,19 @@ class OglasController extends Controller
     public function show($id)
     {
         try {
+            $user = Auth::user();
+            $role=null;
+            if($user->type=='admin')
+            $role='admin';
             $oglas = Oglas::findOrFail($id);
-            return new OglasResource($oglas);
+            if($user->id==$oglas->user_id)
+            $role='company';
+
+            return response()->json([
+                'data'=>  new OglasResource($oglas),
+                'role'=>$role,
+            ]);
+           
         }  catch (\Exception $e) {
            
             return response()->json([

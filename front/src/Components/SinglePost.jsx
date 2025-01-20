@@ -1,48 +1,69 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import Navigation from "./Navigation";
 import "./SinglePost.css";
 
 const SinglePost = () => {
   const { id } = useParams(); // Dohvatanje ID-a posta iz URL-a
   const navigate = useNavigate();
+  const [post, setPost] = useState(null); // Za čuvanje podataka o postu
 
   // Dohvatanje uloge korisnika iz sessionStorage
   const userRole = sessionStorage.getItem("userRole");
 
-  // Simulacija podataka o postovima
-  const samplePosts = [
-    { id: 1, title: "Kako napisati dobar CV?", author: "Marko Petrović", date: "2024-12-05", content: "U ovom članku..." },
-    { id: 2, title: "Saveti za uspešan intervju", author: "Jovana Nikolić", date: "2024-12-01", content: "Intervju za posao može biti stresan..." },
-    { id: 3, title: "Kako se povezati sa kompanijama?", author: "Milan Jovanović", date: "2024-11-28", content: "Networking je ključan..." },
-  ];
+  // Funkcija za dohvat posta sa servera
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/postovi/${id}`, {
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('auth_token'),
+          }
+        });
+        setPost(response.data.data); // Spremamo post u stanje
+      } catch (error) {
+        console.error('Greška prilikom učitavanja posta:', error);
+      }
+    };
 
-  const post = samplePosts.find((p) => p.id === parseInt(id));
+    fetchPost();
+  }, [id]);
 
-  const handleDeletePost = () => {
-    // Logika za brisanje posta (može uključivati API poziv)
-    alert(`Post sa ID-jem ${id} je obrisan.`);
-    navigate("/all-posts"); // Vraćanje na stranicu sa svim postovima
+  // Funkcija za brisanje posta
+  const handleDeletePost = async () => {
+    try {
+      await axios.delete(`http://localhost:8000/api/postovi/${id}`, {
+        headers: {
+          'Authorization': 'Bearer ' + sessionStorage.getItem('auth_token'),
+        }
+      });
+      alert(`Post sa ID-jem ${id} je uspešno obrisan.`);
+      navigate("/svi-postovi"); // Vraćanje na stranicu sa svim postovima
+    } catch (error) {
+      console.error('Greška prilikom brisanja posta:', error);
+      alert("Došlo je do greške pri brisanju posta.");
+    }
   };
 
-  if (!post) {
-    return <p>Post nije pronađen.</p>;
-  }
+  
 
   return (
     <>
       <Navigation />
-      <div className="single-post-container">
-        <h1 className="post-title">{post.title}</h1>
-        <p className="post-author">Autor: {post.author}</p>
-        <p className="post-date">Datum: {post.date}</p>
-        <p className="post-content">{post.content}</p>
+      {post&& (   <div className="single-post-container">
+        <h1 className="post-title">{post.naslov}</h1>
+        <p className="post-author">Autor: {post.autor}</p>
+        <p className="post-date">Datum: {post.datum_i_vreme}</p>
+        <p className="post-content">{post.sadrzaj}</p>
         {["alumni", "admin"].includes(userRole) && (
           <button className="delete-post-button" onClick={handleDeletePost}>
             Obriši Post
           </button>
         )}
-      </div>
+      </div>)}
+   
+     
     </>
   );
 };

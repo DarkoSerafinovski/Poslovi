@@ -66,7 +66,7 @@ class PrijavaController extends Controller
            
             $validatedData = $request->validate([
                 'oglas_id' => 'required|integer|exists:oglasi,id',
-                'fajl' => 'required|mimes:pdf|max:4096',
+                'fajl' => 'required|mimes:pdf',
             ]);
 
         

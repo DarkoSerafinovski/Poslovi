@@ -1,184 +1,229 @@
 import React, { useState, useEffect } from "react";
 import "./JobAdPage.css";
 import Navigation from "./Navigation";
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const JobAdPage = () => {
-  const [role, setRole] = useState(null); // Skladištimo ulogu korisnika
-  const [applications, setApplications] = useState([
-    {
-      id: 1,
-      username: "student1",
-      email: "student1@example.com",
-      cv: "/path/to/cv1.pdf",
-      status: "Na Čekanju",
-    },
-    {
-      id: 2,
-      username: "student2",
-      email: "student2@example.com",
-      cv: "/path/to/cv2.pdf",
-      status: "Odbijen",
-    },
-    {
-      id: 3,
-      username: "student3",
-      email: "student3@example.com",
-      cv: "/path/to/cv3.pdf",
-      status: "Pozvan na intervju",
-    },
-  ]);
+  const [role, setRole] = useState(null);
+  const [jobAd, setJobAd] = useState(null);
+  const [applications, setApplications] = useState([]);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [privilege,setPrivilege]=useState(null);
 
-  // Dohvaćanje uloge iz sessionStorage
   useEffect(() => {
-    const storedRole = sessionStorage.getItem("userRole") || "alumni";
+    const storedRole = sessionStorage.getItem("role") || "alumni";
     if (storedRole) {
       setRole(storedRole);
     } else {
       alert("Uloga nije definisana! Molimo prijavite se ponovo.");
     }
-  }, []);
+
+    // Dohvati oglas
+    axios
+      .get(`http://localhost:8000/api/oglasi/${id}`, {
+        headers: {
+          'Authorization': 'Bearer ' + sessionStorage.getItem('auth_token'),
+        },
+      })
+      .then((response) => {
+        setJobAd(response.data.data);
+        setApplications(response.data.data.prijave);
+        setPrivilege(response.data.role);
+      })
+      .catch((error) => {
+        console.error("Greška pri učitavanju oglasa", error);
+      });
+  }, [id]);
 
   const handleDeleteJobAd = () => {
-    alert("Oglas obrisan!");
-  };
-
-  const handleCloseJobAd = () => {
-    alert("Oglas zatvoren!");
+    axios
+      .delete(`http://localhost:8000/api/oglasi/${id}`, {
+        headers: {
+          'Authorization': 'Bearer ' + sessionStorage.getItem('auth_token'),
+        },
+      })
+      .then(() => {
+        alert("Oglas je uspešno obrisan!");
+        navigate("/oglasi");
+      })
+      .catch((error) => {
+        alert("Greška pri brisanju oglasa.");
+        console.error(error);
+      });
   };
 
   const handleChangeApplicationStatus = (id, newStatus) => {
-    setApplications((prev) =>
-      prev.map((app) =>
-        app.id === id ? { ...app, status: newStatus } : app
+    axios
+      .put(
+        `http://localhost:8000/api/prijave/${id}`,
+        { status: newStatus },
+        {
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('auth_token'),
+          },
+        }
       )
-    );
+      .then(() => {
+        setApplications((prev) =>
+          prev.map((app) =>
+            app.id === id ? { ...app, status: newStatus } : app
+          )
+        );
+      })
+      .catch((error) => {
+        alert("Greška pri izmeni statusa prijave.");
+        console.error(error);
+      });
   };
 
   const handleApplyForJob = (e) => {
     e.preventDefault();
-    alert("Prijava uspešno poslata!");
+    const file = e.target.fajl.files[0];
+    if (!file) {
+      alert("Molimo odaberite PDF fajl.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('oglas_id', id);
+    formData.append('fajl', file);
+
+    axios
+      .post("http://localhost:8000/api/prijave", formData, {
+        headers: {
+          'Authorization': 'Bearer ' + sessionStorage.getItem('auth_token'),
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(() => {
+        alert("Prijava uspešno poslata!");
+        navigate('/moje-prijave');
+      })
+      .catch((error) => {
+        alert("Greška pri slanju prijave.");
+        console.error(error);
+      });
   };
 
-  // Renderovanje
+  const getRowClass = (status) => {
+    switch (status) {
+      case 'prihvaceno':
+        return 'accepted';
+      case 'na cekanju':
+        return 'pending';
+      case 'odbijeno':
+        return 'rejected';
+      default:
+        return '';
+    }
+  };
+
   return (
     <>
-        <Navigation/>
-        <div className="job-ad-page">
-        {/* Baner oglasa */}
-        <div className="job-banner">
-            <img
-            src="https://via.placeholder.com/1200x300"
-            alt="Job Banner"
-            className="banner-image"
-            />
-        </div>
+      <Navigation />
+      <div className="job-ad-page">
+        {jobAd && (
+          <>
+            {/* Baner oglasa */}
+            <div className="job-banner">
+              <img
+                src={jobAd.banner}
+                alt="Job Banner"
+                className="banner-image"
+              />
+            </div>
 
-        {/* Opis posla */}
-        <div className="job-description">
-            <h1>Naslov oglasa</h1>
-            <p>Opis posla: Ovo je opis posla za određeni oglas.</p>
-            <p>Potrebna znanja: React, Node.js, CSS, HTML</p>
-            <p>Lokacija: Beograd</p>
-        </div>
+            {/* Opis posla */}
+            <div className="job-description">
+              <h1>{jobAd.naslov}</h1>
+              <p>{jobAd.opis}</p>
+              <h3>Pozicija: {jobAd.kategorija.naziv}</h3>
+              <p>Potrebna znanja: {jobAd.potrebna_znanja}</p>
+              <p>Lokacija: {jobAd.lokacija}</p>
+            </div>
 
-        {/* Dinamički sadržaj u zavisnosti od uloge */}
-        {role === "admin" && (
-            <div className="admin-section">
-            <h2>Prijave za oglas</h2>
-            <table className="applications-table">
-                <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>CV</th>
-                    <th>Status prijave</th>
-                </tr>
-                </thead>
-                <tbody>
-                {applications.map((app) => (
-                    <tr key={app.id}>
-                    <td>{app.username}</td>
-                    <td>{app.email}</td>
-                    <td>
-                        <a href={app.cv} target="_blank" rel="noopener noreferrer">
-                        Otvori CV
-                        </a>
-                    </td>
-                    <td>{app.status}</td>
+            {/* Admin sekcija */}
+            {privilege === "company" && (
+              <div className="admin-section">
+                <h2>Prijave za oglas</h2>
+                <table className="applications-table">
+                  <thead>
+                    <tr>
+                      <th>Ime</th>
+                      <th>Email</th>
+                      <th>CV</th>
+                      <th>Status prijave</th>
+                      <th>Akcije</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
-            <button onClick={handleDeleteJobAd} className="delete-job-btn">
-                Obriši oglas
-            </button>
-            </div>
-        )}
+                  </thead>
+                  <tbody>
+                    {applications.map((app) => (
+                      <tr
+                        key={app.id}
+                        className={getRowClass(app.status)}
+                      >
+                        <td>{app.ime} {app.prezime}</td>
+                        <td>{app.email}</td>
+                        <td>
+                          <a href={app.fajl} target="_blank" rel="noopener noreferrer">
+                            Otvori CV
+                          </a>
+                        </td>
+                        <td>{app.status}</td>
+                        <td>
+                          {app.status === "na cekanju" && (
+                            <>
+                              <button
+                                className="invite"
+                                onClick={() =>
+                                  handleChangeApplicationStatus(app.id, "prihvaceno")
+                                }
+                              >
+                                Prihvati
+                              </button>
+                              <button
+                                className="reject-btn"
+                                onClick={() =>
+                                  handleChangeApplicationStatus(app.id, "odbijeno")
+                                }
+                              >
+                                Odbij
+                              </button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {(privilege==='company' || privilege==='admin') && ( 
+                   <button onClick={handleDeleteJobAd} className="delete-job-btn">
+                  Obriši oglas
+                </button>)}
+              
+              </div>
+            )}
 
-        {role === "company" && (
-            <div className="company-section">
-            <h2>Prijave za oglas</h2>
-            <table className="applications-table">
-                <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>CV</th>
-                    <th>Status prijave</th>
-                    <th>Akcije</th>
-                </tr>
-                </thead>
-                <tbody>
-                {applications.map((app) => (
-                    <tr key={app.id}>
-                    <td>{app.username}</td>
-                    <td>{app.email}</td>
-                    <td>
-                        <a href={app.cv} target="_blank" rel="noopener noreferrer">
-                        Otvori CV
-                        </a>
-                    </td>
-                    <td>{app.status}</td>
-                    <td>
-                        {app.status === "Na Čekanju" && (
-                        <>
-                            <button className="invite-btn"
-                            onClick={() =>
-                                handleChangeApplicationStatus(app.id, "interview")
-                            }
-                            >
-                            Pozovi na intervju
-                            </button>
-                            <button className="reject-btn"
-                            onClick={() =>
-                                handleChangeApplicationStatus(app.id, "rejected")
-                            }
-                            >
-                            Odbij
-                            </button>
-                        </>
-                        )}
-                    </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            <button onClick={handleCloseJobAd} className="close-job-btn">
-                Zatvori oglas
-            </button>
-            </div>
+            {/* Sekcija za prijavu (student) */}
+            {role === "student" && (
+              <div className="student-section">
+                <h2>Prijavi se za oglas</h2>
+                <form onSubmit={handleApplyForJob}>
+                  <input
+                    type="file"
+                    name="fajl"
+                    accept="application/pdf"
+                    required
+                  />
+                  <button type="submit">Prijavi se</button>
+                </form>
+              </div>
+            )}
+          </>
         )}
-
-        {role === "student" && (
-            <div className="student-section">
-            <h2>Prijavi se za oglas</h2>
-            <form onSubmit={handleApplyForJob}>
-                <input type="file" accept="application/pdf" required />
-                <button type="submit">Prijavi se</button>
-            </form>
-            </div>
-        )}
-        </div>
+      </div>
     </>
   );
 };

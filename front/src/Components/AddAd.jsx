@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Navigation from "./Navigation";
 import "./AddAd.css";
 
@@ -7,26 +8,66 @@ const AddAd = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [skills, setSkills] = useState("");
-  const [category, setCategory] = useState("Posao"); // Default kategorija
-  const [jobCategory, setJobCategory] = useState("Front-end"); // Default kategorija posla
+  const [location, setLocation] = useState("");
+  const [category, setCategory] = useState(""); // Kategorija biće učitana
+  const [categories, setCategories] = useState([]); // Za držanje kategorija
   const [image, setImage] = useState(null);
+  const [adType, setAdType] = useState("posao"); // Default tip
   const navigate = useNavigate();
+
+  // Učitavanje kategorija oglasa
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/kategorije',{
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("auth_token"),
+          },
+        });
+        setCategories(response.data.data); // Čuvanje kategorija u state
+        if (response.data.length > 0) {
+          setCategory(response.data[0].id); // Postavljamo prvu kategoriju kao default
+        }
+      } catch (error) {
+        console.error("Greška pri učitavanju kategorija", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
+      setImage(file);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simuliramo dodavanje oglasa (ovde bi se pozvao API za slanje podataka)
-    console.log("Novi oglas je dodat:");
-    console.log({ title, description, skills, category, jobCategory, image });
 
-    // Nakon slanja, navigiramo korisnika na stranicu sa svim oglasima
-    navigate("/all-ads");
+    const formData = new FormData();
+    formData.append('naslov', title);
+    formData.append('opis', description);
+    formData.append('potrebna_znanja', skills);
+    formData.append('kategorija_id', category);
+    formData.append('lokacija', location); // Možeš dodati polje za lokaciju
+    formData.append('tip', adType);
+    formData.append('banner', image);
+
+    try {
+      await axios.post('http://localhost:8000/api/oglasi', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Za slanje fajlova,
+          'Authorization': "Bearer " + sessionStorage.getItem("auth_token"),
+        },
+      });
+
+     
+      navigate('/nasi-oglasi');
+    } catch (error) {
+      console.error("Greška pri dodavanju oglasa", error);
+    }
   };
 
   return (
@@ -64,6 +105,17 @@ const AddAd = () => {
               required
             />
           </div>
+
+          <div className="form-group">
+            <label htmlFor="location">Lokacija:</label>
+            <input
+              type="text"
+              id="location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+            />
+          </div>
           <div className="form-group">
             <label htmlFor="category">Kategorija:</label>
             <select
@@ -72,26 +124,23 @@ const AddAd = () => {
               onChange={(e) => setCategory(e.target.value)}
               required
             >
-              <option value="Posao">Posao</option>
-              <option value="Praksa">Praksa</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.naziv}
+                </option>
+              ))}
             </select>
           </div>
           <div className="form-group">
-            <label htmlFor="job-category">Kategorija Posla:</label>
+            <label htmlFor="ad-type">Tip Oglasa:</label>
             <select
-              id="job-category"
-              value={jobCategory}
-              onChange={(e) => setJobCategory(e.target.value)}
+              id="ad-type"
+              value={adType}
+              onChange={(e) => setAdType(e.target.value)}
               required
             >
-              <option value="Front-end">Front-end</option>
-              <option value="Back-end">Back-end</option>
-              <option value="Full-stack">Full-stack</option>
-              <option value="DevOps">DevOps</option>
-              <option value="Mobile Development">Mobile Development</option>
-              <option value="Data Science">Data Science</option>
-              <option value="QA Engineer">QA Engineer</option>
-              <option value="UI/UX Designer">UI/UX Designer</option>
+              <option value="posao">Posao</option>
+              <option value="praksa">Praksa</option>
             </select>
           </div>
           <div className="form-group">
@@ -101,8 +150,8 @@ const AddAd = () => {
               id="image"
               accept="image/*"
               onChange={handleImageChange}
+              required
             />
-            {image && <img src={image} alt="Preview" className="image-preview" />}
           </div>
           <button type="submit" className="submit-button">Dodaj Oglas</button>
         </form>

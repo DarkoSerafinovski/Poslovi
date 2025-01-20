@@ -18,7 +18,8 @@ class Oglas extends Model
         'lokacija',        
         'banner', 
         'kategorija_id', 
-        'tip',       
+        'tip',    
+         
     ];
 
     public function user()

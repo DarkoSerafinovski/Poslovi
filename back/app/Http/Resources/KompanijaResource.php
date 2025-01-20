@@ -15,11 +15,12 @@ class KompanijaResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'=>$this->id,
         'naziv' => $this->naziv,
         'opis' => $this->opis,
         'logo'=> asset($this->logo),
         'kategorija' => new KategorijaKompanijeResource($this->kategorija),
-        'oglasi'=>OglasResource::collection($this->user->oglasi),
+        'oglasi'=>OglasResource::collection($this->user->nasiOglasi),
         ];
     }
 }

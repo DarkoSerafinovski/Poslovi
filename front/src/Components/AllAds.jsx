@@ -1,66 +1,102 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "./Navigation";
+import axios from "axios";
 import "./AllAds.css";
 
 const AllAds = () => {
-  const [ads, setAds] = useState([]);
-  const [categories, setCategories] = useState([]); // Lista kategorija
-  const [types, setTypes] = useState([]); // Lista tipova oglasa
+  const [ads, setAds] = useState([]); // Oglasi
+  const [categories, setCategories] = useState([]); // Kategorije
+  const [types] = useState([ // Tipovi oglasa
+    { id: 1, name: "posao" },
+    { id: 2, name: "praksa" }
+  ]);
   const [filteredAds, setFilteredAds] = useState([]); // Filtrirani oglasi
   const [selectedCategory, setSelectedCategory] = useState(null); // Izabrana kategorija
   const [selectedType, setSelectedType] = useState(null); // Izabrani tip
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0
+  });
+  const postsPerPage = 10; // Broj oglasa po stranici
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fikstivni podaci za oglase, kategorije i tipove
-    const sampleAds = [
-      { id: 1, title: "Junior React Developer", company: "TechCorp", location: "Beograd", type: "Front-end", category: "Posao" },
-      { id: 2, title: "Senior Backend Developer", company: "DevHouse", location: "Novi Sad", type: "Back-end", category: "Posao" },
-      { id: 3, title: "UI/UX Designer Intern", company: "Creative Studio", location: "Niš", type: "UI/UX Designer", category: "Praksa" },
-    ];
+    // Učitaj kategorije
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/kategorije', {
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('auth_token'),
+          }
+        });
+        setCategories(response.data.data);
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    };
 
-    const sampleCategories = [
-      { id: 1, name: "Posao" },
-      { id: 2, name: "Praksa" },
-    ];
-
-    const sampleTypes = [
-      { id: 1, name: "Front-end" },
-      { id: 2, name: "Back-end" },
-      { id: 3, name: "Full-stack" },
-      { id: 4, name: "DevOps" },
-      { id: 5, name: "Mobile Development" },
-      { id: 6, name: "Data Science" },
-      { id: 7, name: "QA Engineer" },
-      { id: 8, name: "UI/UX Designer" },
-    ];
-
-    setAds(sampleAds);
-    setFilteredAds(sampleAds); // Inicijalno prikaži sve oglase
-    setCategories(sampleCategories);
-    setTypes(sampleTypes);
+    fetchCategories();
   }, []);
 
   useEffect(() => {
-    // Filtriranje oglasa na osnovu kategorije i tipa
-    let filtered = ads;
+    // Filtriranje i učitavanje oglasa sa servera
+    const fetchAds = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/oglasi', {
+          params: {
+            page: pagination.currentPage,
+            per_page: postsPerPage,
+            kategorija_id: selectedCategory ?  selectedCategory.id  : null,
+            tip: selectedType ? selectedType.name : null,
+          },
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('auth_token'),
+          }
+        });
 
-    if (selectedCategory) {
-      filtered = filtered.filter((ad) => ad.category === selectedCategory.name);
-    }
+        setAds(response.data.data);
+        console.log(response.data.data);
+        setPagination({
+          currentPage: response.data.meta.current_page,
+          totalPages: response.data.meta.last_page,
+          totalItems: response.data.meta.total,
+        });
+      } catch (error) {
+        console.error('Error loading ads:', error);
+      }
+    };
 
-    if (selectedType) {
-      filtered = filtered.filter((ad) => ad.type === selectedType.name);
-    }
-
-    setFilteredAds(filtered);
-  }, [selectedCategory, selectedType, ads]);
+    fetchAds();
+  }, [selectedCategory, selectedType, pagination.currentPage]);
 
   const handleAdClick = (adId) => {
     navigate(`/all-ads/${adId}`);
   };
 
+  // Handle pagination
+  const handleNextPage = () => {
+    if (pagination.currentPage < pagination.totalPages) {
+      setPagination(prev => ({
+        ...prev,
+        currentPage: prev.currentPage + 1,
+      }));
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (pagination.currentPage > 1) {
+      setPagination(prev => ({
+        ...prev,
+        currentPage: prev.currentPage - 1,
+      }));
+    }
+  };
+
+  if(!categories){
+    <p>Ucitavanje....</p>
+  }
   return (
     <>
       <Navigation />
@@ -70,7 +106,7 @@ const AllAds = () => {
           <h3>Filteri</h3>
 
           {/* Filter po kategorijama */}
-          <h4>Kategorije</h4>
+          <h4>Kategorije oglasa</h4>
           <ul>
             {categories.map((category) => (
               <li
@@ -82,13 +118,13 @@ const AllAds = () => {
                   )
                 }
               >
-                {category.name}
+                {category.naziv}
               </li>
             ))}
           </ul>
 
           {/* Filter po tipovima */}
-          <h4>Tipovi oglasa</h4>
+          <h4>Tipovi</h4>
           <ul>
             {types.map((type) => (
               <li
@@ -118,30 +154,53 @@ const AllAds = () => {
         <div className="ads-section">
           <h1 className="page-title">Svi Oglasi</h1>
           <div className="ads-list">
-            {filteredAds.map((ad) => (
-              <div
-                className="ad-card"
-                key={ad.id}
-                onClick={() => handleAdClick(ad.id)}
-                style={{ cursor: "pointer" }}
-              >
+            {ads.length > 0 ? (
+              ads.map((ad) => (
                 <div
-                  className={`ad-type ${
-                    ad.category === "Posao" ? "job" : "internship"
-                  }`}
+                  className="ad-card"
+                  key={ad.id}
+                  onClick={() => handleAdClick(ad.id)}
+                  style={{ cursor: "pointer" }}
                 >
-                  {ad.category}
+                  <div
+                    className={`ad-type ${ad.tip == "posao" ? "job" : "internship"}`}
+                  >
+                    {ad.tip || 'Ostalo'}
+                  </div>
+                  <h2 className="ad-title">{ad.naslov}</h2>
+                  <p className="ad-company">{ad.firma}</p>
+                  <p className="ad-location">{ad.lokacija}</p>
+                  <button className="apply-button">Pogledaj oglas</button>
                 </div>
-                <h2 className="ad-title">{ad.title}</h2>
-                <p className="ad-company">{ad.company}</p>
-                <p className="ad-location">{ad.location}</p>
-                
-                <button className="apply-button">Pogledaj oglas</button>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>Nema oglasa za prikaz.</p>
+            )}
           </div>
         </div>
+
+        {/* Pagination Controls */}
+      
       </div>
+      <div className="pagination">
+          <button
+            onClick={handlePrevPage}
+            disabled={pagination.currentPage === 1}
+            className="pagination-button"
+          >
+            Prethodna
+          </button>
+          <span className="pagination-info">
+            Stranica {pagination.currentPage} od {pagination.totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={pagination.currentPage === pagination.totalPages}
+            className="pagination-button"
+          >
+            Sledeća
+          </button>
+        </div>
     </>
   );
 };
