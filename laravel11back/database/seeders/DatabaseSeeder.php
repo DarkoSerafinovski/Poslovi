@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     
         KategorijaKompanije::factory(5)->create();
         KategorijaOglasa::factory(5)->create();
-        $users = User::factory(10)->create();
+        $users = User::factory(30)->create();
 
         
         foreach ($users as $user) {

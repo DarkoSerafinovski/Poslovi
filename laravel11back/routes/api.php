@@ -57,10 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/moje-prijave',[UserController::class,'prijave']);
 
 
-    Route::get('postovi',[PostController::class,'index']);
-    Route::post('postovi',[PostController::class,'store']);
-    Route::get('postovi/{id}',[PostController::class,'show']);
-    Route::delete('postovi/{id}',[PostController::class,'destroy']);
+    Route::apiResource('postovi', PostController::class);
 
     Route::get('kategorije',[KategorijaOglasaController::class,'index']);
     Route::post('kategorije',[KategorijaOglasaController::class,'store']);

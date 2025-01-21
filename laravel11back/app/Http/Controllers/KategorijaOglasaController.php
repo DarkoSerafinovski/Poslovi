@@ -57,7 +57,7 @@ class KategorijaOglasaController extends Controller
             if(Auth::user()->type!='admin'){
                 return response()->json([
                     'success' => false,
-                    'message' => 'Nije autorizovan pristup, morate biti administrator da bi ste napravili kategoriju!!!',
+                    'message' => 'Nije autorizovan pristup, morate biti administrator da bi ste obrisali kategoriju!!!',
                 ], 401);
             }
 
