@@ -29,6 +29,7 @@ const CompanyProfile = () => {
           role: data.role,
         });
 
+        setFile(data.details.logo);
         setCompany({ ...data.details, email: data.email });
         setEditedCompany({ ...data.details, email: data.email });
       } catch (error) {
@@ -118,10 +119,6 @@ const CompanyProfile = () => {
           <img
             src={
               file
-                ? file
-                : editedCompany.logo instanceof File
-                ? URL.createObjectURL(editedCompany.logo)
-                : editedCompany.logo
             }
             alt="Company Logo"
             className="company-logo"
